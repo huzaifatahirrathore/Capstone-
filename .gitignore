@@ -1,0 +1,12 @@
+node_modules/
+venv/
+uploads/
+results/
+tmp/
+__pycache__/
+*.pyc
+
+# optional (model file if too big for github)
+best.pt
+
+.env
