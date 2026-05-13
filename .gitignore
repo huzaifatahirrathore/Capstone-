@@ -1,12 +1,35 @@
+# =========================
+# Dependencies
+# =========================
 node_modules/
 venv/
-uploads/
-results/
-tmp/
+
+# =========================
+# Python cache
+# =========================
 __pycache__/
 *.pyc
 
-# optional (model file if too big for github)
+# =========================
+# Runtime / generated files
+# =========================
+uploads/
+results/
+tmp/
+*.jpg
+*.png
+
+# =========================
+# Model files (optional / large)
+# =========================
 best.pt
 
+# =========================
+# Environment variables
+# =========================
 .env
+
+# =========================
+# Logs (optional safety)
+# =========================
+*.log
