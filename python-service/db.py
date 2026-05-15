@@ -65,3 +65,36 @@ def delete_user(user_id):
     cur.close()
     conn.close()
     return deleted
+
+
+# ────────────────
+# USER SIGNUP & LOGIN HELPERS (PYTHON)
+# ────────────────
+def signup_user(username, email, password):
+    conn = get_connection()
+    cur = conn.cursor()
+    # Check if email exists
+    cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+    if cur.fetchone():
+        cur.close()
+        conn.close()
+        return None  # Email already exists
+    cur.execute("""
+        INSERT INTO users (username, email, password)
+        VALUES (%s, %s, %s)
+        RETURNING id, username, email
+    """, (username, email, password))
+    user = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return user
+
+def login_user(email, password):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, username, email FROM users WHERE email = %s AND password = %s", (email, password))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+    return user
