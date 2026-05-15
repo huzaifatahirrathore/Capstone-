@@ -186,6 +186,59 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 
+
+// ────────────────
+// USER SIGNUP & LOGIN ROUTES
+// ────────────────
+
+// Signup (register new user)
+app.post("/signup", async (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
+  try {
+    // Check if email already exists
+    const exists = await pool.query(
+      `SELECT id FROM users WHERE email = $1`, [email]
+    );
+    if (exists.rows.length > 0) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+    const result = await pool.query(
+      `INSERT INTO users (username, email, password)
+       VALUES ($1, $2, $3)
+       RETURNING id, username, email`,
+      [username, email, password]
+    );
+    res.status(201).json({ user: result.rows[0] });
+  } catch (err) {
+    console.error("Signup Error:", err.message);
+    res.status(500).json({ error: "Signup failed" });
+  }
+});
+
+// Login (authenticate user)
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
+  try {
+    const result = await pool.query(
+      `SELECT id, username, email FROM users WHERE email = $1 AND password = $2`,
+      [email, password]
+    );
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    res.json({ user: result.rows[0], message: "Login successful" });
+  } catch (err) {
+    console.error("Login Error:", err.message);
+    res.status(500).json({ error: "Login failed" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
