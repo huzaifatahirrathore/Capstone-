@@ -3,8 +3,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
-from compare import compare 
-from db import create_user, get_user, get_all_users, update_user, delete_user
+from compare import compare
 app = Flask(__name__)
 
 model = YOLO("best.pt")
@@ -55,52 +54,6 @@ def compare_api():
     except Exception as e:
         print("COMPARE ERROR:", e)
         return {"error": str(e)}, 500
-
+    
 if __name__ == "__main__":
-    app.run(port=5000)
-
-
-# ────────────────
-# USER CRUD ROUTES
-# ────────────────
-@app.route('/users', methods=['POST'])
-def api_create_user():
-    data = request.json
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    if not (username and email and password):
-        return jsonify({'error': 'Missing fields'}), 400
-    user = create_user(username, email, password)
-    return jsonify({'user': user}), 201
-
-@app.route('/users/<int:user_id>', methods=['GET'])
-def api_get_user(user_id):
-    user = get_user(user_id)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    return jsonify({'user': user})
-
-@app.route('/users', methods=['GET'])
-def api_get_all_users():
-    users = get_all_users()
-    return jsonify({'users': users})
-
-@app.route('/users/<int:user_id>', methods=['PUT'])
-def api_update_user(user_id):
-    data = request.json
-    username = data.get('username')
-    email = data.get('email')
-    if not (username and email):
-        return jsonify({'error': 'Missing fields'}), 400
-    user = update_user(user_id, username, email)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    return jsonify({'user': user})
-
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def api_delete_user(user_id):
-    deleted = delete_user(user_id)
-    if not deleted:
-        return jsonify({'error': 'User not found'}), 404
-    return jsonify({'deleted': deleted[0]})
+    app.run()

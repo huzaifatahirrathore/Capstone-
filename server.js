@@ -268,6 +268,90 @@ app.post("/login", async (req, res) => {
   }
 });
 
+/* =========================
+   PLANTATION PROJECT CRUD
+========================= */
+// Create plantation project
+app.post("/projects", authenticateToken, async (req, res) => {
+  const { name, description, location, start_date, end_date } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: "Project name is required" });
+  }
+  try {
+    const result = await pool.query(
+      `INSERT INTO plantation_projects (name, description, location, start_date, end_date, created_by)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+      [name, description, location, start_date, end_date, req.user.id]
+    );
+    res.status(201).json({ project: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Create project failed" });
+  }
+});
+
+// Get all plantation projects
+app.get("/projects", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM plantation_projects`
+    );
+    res.json({ projects: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: "Get projects failed" });
+  }
+});
+
+// Get plantation project by ID
+app.get("/projects/:id", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM plantation_projects WHERE id = $1`,
+      [req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    res.json({ project: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Get project failed" });
+  }
+});
+
+// Update plantation project
+app.put("/projects/:id", authenticateToken, async (req, res) => {
+  const { name, description, location, start_date, end_date } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE plantation_projects SET name = $1, description = $2, location = $3, start_date = $4, end_date = $5
+       WHERE id = $6 RETURNING *`,
+      [name, description, location, start_date, end_date, req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    res.json({ project: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Update project failed" });
+  }
+});
+
+// Delete plantation project
+app.delete("/projects/:id", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM plantation_projects WHERE id = $1 RETURNING id`,
+      [req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    res.json({ deleted: result.rows[0].id });
+  } catch (err) {
+    res.status(500).json({ error: "Delete project failed" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
