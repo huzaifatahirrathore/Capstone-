@@ -1,0 +1,20 @@
+{
+  "pair_id": "pair_0042",
+  "category": "lighting",
+  "source_image": "train/dataset/images/val/resized_image_85_png.rf.PYKjivtUB6TpWZ6EA56V.png",
+  "source_h": 512,
+  "source_w": 512,
+  "n_trees_total": 38,
+  "n_trees_lost": 0,
+  "n_trees_added": 0,
+  "seed": 83,
+  "perturbations": {
+    "lighting": {
+      "brightness": 1.1623449062712037,
+      "contrast": 0.9945543489621222,
+      "hue_shift": -1,
+      "saturation": 1.098623740286818
+    }
+  },
+  "mask_source": "sam_polygons"
+}

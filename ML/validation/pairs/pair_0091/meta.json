@@ -1,0 +1,34 @@
+{
+  "pair_id": "pair_0091",
+  "category": "homography",
+  "source_image": "train/dataset/images/val/5_10_jpg.rf.dkKotYx1WTscVlwl0iLb.jpg",
+  "source_h": 1920,
+  "source_w": 1920,
+  "n_trees_total": 117,
+  "n_trees_lost": 0,
+  "n_trees_added": 0,
+  "seed": 132,
+  "perturbations": {
+    "homography": {
+      "max_corner_shift_px": 12,
+      "matrix": [
+        [
+          0.9962211619888006,
+          -0.00025503157764987695,
+          -4.233560085296631
+        ],
+        [
+          -0.00014672423025368676,
+          0.9995390376541662,
+          -6.04686975479126
+        ],
+        [
+          -1.56444811052579e-06,
+          -3.3255229437283065e-06,
+          1.0
+        ]
+      ]
+    }
+  },
+  "mask_source": "sam_polygons"
+}

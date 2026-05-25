@@ -1,0 +1,42 @@
+{
+  "pair_id": "pair_0004",
+  "category": "loss_realistic",
+  "source_image": "train/dataset/images/val/000000134_jpg.rf.stq6luLDgecGsZI9nNM0.jpg",
+  "source_h": 640,
+  "source_w": 640,
+  "n_trees_total": 16,
+  "n_trees_lost": 2,
+  "n_trees_added": 0,
+  "seed": 45,
+  "perturbations": {
+    "lighting": {
+      "brightness": 0.8494188253433242,
+      "contrast": 1.044965331333857,
+      "hue_shift": 7,
+      "saturation": 0.9678079283846635
+    },
+    "homography": {
+      "max_corner_shift_px": 12,
+      "matrix": [
+        [
+          1.0261544121294393,
+          -0.006606932167733477,
+          -1.2189829349517822
+        ],
+        [
+          0.018150812280096858,
+          1.018000474045996,
+          -5.323422908782959
+        ],
+        [
+          1.6016214856827043e-05,
+          3.2209866172186746e-05,
+          1.0
+        ]
+      ]
+    },
+    "jpeg_quality": 82,
+    "noise_sigma": 0.8577359678194705
+  },
+  "mask_source": "sam_polygons"
+}

@@ -1,0 +1,13 @@
+{
+  "pair_id": "pair_0078",
+  "category": "loss_small",
+  "source_image": "train/dataset/images/val/84987849-5edd-44ca-8a45-5ac7ea3411c8_jpg.rf.Vw7g7ONVPPl3NiHSdOXG.jpg",
+  "source_h": 640,
+  "source_w": 640,
+  "n_trees_total": 124,
+  "n_trees_lost": 2,
+  "n_trees_added": 0,
+  "seed": 119,
+  "perturbations": {},
+  "mask_source": "sam_polygons"
+}

@@ -1,0 +1,20 @@
+{
+  "pair_id": "pair_0066",
+  "category": "lighting",
+  "source_image": "train/dataset/images/val/bfe94277-ff7f-4e1d-ad4f-7de67a33e6a4_jpg.rf.w1f4TAHc38xROQfw9Vez.jpg",
+  "source_h": 640,
+  "source_w": 640,
+  "n_trees_total": 44,
+  "n_trees_lost": 0,
+  "n_trees_added": 0,
+  "seed": 107,
+  "perturbations": {
+    "lighting": {
+      "brightness": 0.82178842012313,
+      "contrast": 0.9787716679310001,
+      "hue_shift": 9,
+      "saturation": 0.9411264158504136
+    }
+  },
+  "mask_source": "sam_polygons"
+}

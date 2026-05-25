@@ -1,0 +1,13 @@
+{
+  "pair_id": "pair_0020",
+  "category": "loss_clean",
+  "source_image": "train/dataset/images/val/4_10_jpg.rf.AB1CdLqIhs1MsZ8kpctP.jpg",
+  "source_h": 1920,
+  "source_w": 1920,
+  "n_trees_total": 45,
+  "n_trees_lost": 11,
+  "n_trees_added": 0,
+  "seed": 61,
+  "perturbations": {},
+  "mask_source": "sam_polygons"
+}
