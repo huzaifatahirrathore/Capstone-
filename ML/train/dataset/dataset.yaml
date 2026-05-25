@@ -1,0 +1,7 @@
+path: /media/asawir-shafiq-khokhar/OS/programs/forest trees.coco/train/dataset
+train: images/train
+val: images/val
+test: images/test
+
+nc: 1
+names: ['tree']

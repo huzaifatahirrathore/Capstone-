@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv*/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Model weights — ALL excluded. The production engine (ExG) is model-free
+# and CPU-only, so no weights ship with the repo. The experimental seg model
+# (models/tree_seg.pt) stays local-only.
+*.pt
+*.pth
+
+# Results and outputs
+results/
+runs/
+tmp/
+
+# Generated / regenerable validation artifacts (not source)
+validation/pairs/
+validation/pairs_smoke*/
+validation/reports/
+
+# Training inputs the web team does NOT need (kept local, not pushed).
+# Keep only the dataset/*.yaml configs (small, useful as documentation).
+train/dataset/images/
+# the labels→labels_seg symlink and the polygon labels it points to
+train/dataset/labels
+train/dataset/labels/
+train/dataset/labels_seg/
+train/dataset/labels_det/
+*.cache
+train/_annotations.coco.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Data (optional - exclude if data is large)
+# dataset/

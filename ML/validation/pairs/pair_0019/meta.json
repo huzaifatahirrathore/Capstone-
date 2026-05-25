@@ -1,0 +1,34 @@
+{
+  "pair_id": "pair_0019",
+  "category": "homography",
+  "source_image": "train/dataset/images/val/DJI_0926_JPG.rf.H1fZUI4w6ETU5iCuOy0N.JPG",
+  "source_h": 3648,
+  "source_w": 5472,
+  "n_trees_total": 26,
+  "n_trees_lost": 0,
+  "n_trees_added": 0,
+  "seed": 60,
+  "perturbations": {
+    "homography": {
+      "max_corner_shift_px": 12,
+      "matrix": [
+        [
+          0.9930976350125656,
+          -0.003631053024811592,
+          8.35236644744873
+        ],
+        [
+          -0.0017968664134470314,
+          0.9932146302454966,
+          5.274102210998535
+        ],
+        [
+          -8.231894300695298e-07,
+          -7.934190557859026e-07,
+          1.0
+        ]
+      ]
+    }
+  },
+  "mask_source": "sam_polygons"
+}

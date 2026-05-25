@@ -1,0 +1,13 @@
+{
+  "pair_id": "pair_0057",
+  "category": "identity",
+  "source_image": "train/dataset/images/val/0a3967e9-5bec-4f88-ba3d-e9c09b76e4df_jpg.rf.gBBM1jJXsqpCS1q0XsMY.jpg",
+  "source_h": 640,
+  "source_w": 640,
+  "n_trees_total": 121,
+  "n_trees_lost": 0,
+  "n_trees_added": 0,
+  "seed": 98,
+  "perturbations": {},
+  "mask_source": "sam_polygons"
+}
