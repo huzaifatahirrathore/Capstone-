@@ -1,0 +1,136 @@
+/* ─── Tailwind v4 entry point ─────────────────────────────────────────────── */
+@import "tailwindcss";
+
+/* ─── ROOT Trust · Warm Earth-Tech Design System ─────────────────────────── */
+@theme {
+
+  /* ── Colors ─────────────────────────────────────────────────────────────── */
+
+  /* Terracotta / Rust-Orange — headers, sidebars, login background */
+  --color-earth-terracotta:        #A3431F;
+  --color-earth-terracotta-dark:   #853214;
+  --color-earth-terracotta-light:  #C25D36;
+
+  /* Tech Teal — buttons, active steps, Verified badges */
+  --color-tech-teal:               #008080;
+  --color-tech-teal-hover:         #006666;
+  --color-tech-teal-glow:          #00E6E6;
+
+  /* Sand — main screen and wizard backgrounds */
+  --color-sand-bg:                 #EFE8DC;
+  --color-sand-bg-card:            #F9F6F0;
+
+  /* Charcoal Dark — satellite analysis view only */
+  --color-charcoal-dark:           #2C2D30;
+  --color-charcoal-dark-card:      #37393D;
+
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+
+  /* Primary sans-serif — Inter first, Jakarta as fallback */
+  --font-sans:
+    'Inter',
+    'Plus Jakarta Sans',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  /* ── Border Radius ───────────────────────────────────────────────────────── */
+
+  /* Cards and dashboard panels — use `rounded-apps` in JSX */
+  --radius-apps: 0.5rem;
+}
+
+/* ─── Base resets ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── CSS custom properties for Shadcn/ui & Radix UI integration ──────────── *
+ *
+ * Shadcn components read these HSL variables (--background, --foreground, etc.)
+ * Map them to the ROOT Trust palette so shadcn primitives stay on-brand.
+ *
+ * Usage: npx shadcn-ui@latest init  →  choose "CSS variables: yes"
+ *        then replace the generated :root / .dark blocks below with these.
+ * ─────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Canvas */
+    --background:        45 36% 87%;   /* sand-bg    #EFE8DC */
+    --foreground:        220 4% 18%;   /* charcoal   #2C2D30 */
+
+    /* Cards / popovers */
+    --card:              40 47% 96%;   /* sand-card  #F9F6F0 */
+    --card-foreground:   220 4% 18%;
+
+    /* Popovers */
+    --popover:           40 47% 96%;
+    --popover-foreground:220 4% 18%;
+
+    /* Primary action — terracotta */
+    --primary:           17 69% 37%;   /* #A3431F */
+    --primary-foreground:40 47% 96%;
+
+    /* Secondary — tech teal */
+    --secondary:         180 100% 25%; /* #008080 */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted:             45 25% 82%;
+    --muted-foreground:  220 4% 42%;
+
+    /* Accent — teal glow for highlights */
+    --accent:            180 100% 45%; /* #00E6E6 */
+    --accent-foreground: 220 4% 18%;
+
+    /* Destructive */
+    --destructive:       0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border / input / ring */
+    --border:            45 20% 78%;
+    --input:             45 20% 78%;
+    --ring:              17 69% 37%;   /* terracotta focus ring */
+
+    /* Shadcn radius token — mirrors --radius-apps */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Satellite Analysis View — charcoal dark mode */
+    --background:        220 4% 18%;   /* charcoal-dark  #2C2D30 */
+    --foreground:        40 47% 96%;
+
+    --card:              220 4% 22%;   /* charcoal-card  #37393D */
+    --card-foreground:   40 47% 96%;
+
+    --popover:           220 4% 22%;
+    --popover-foreground:40 47% 96%;
+
+    --primary:           17 62% 40%;   /* terracotta-light #C25D36 on dark */
+    --primary-foreground:40 47% 96%;
+
+    --secondary:         180 100% 20%; /* deeper teal on dark */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted:             220 4% 28%;
+    --muted-foreground:  220 4% 62%;
+
+    --accent:            180 100% 45%; /* teal glow stays vivid */
+    --accent-foreground: 220 4% 12%;
+
+    --destructive:       0 62% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:            220 4% 30%;
+    --input:             220 4% 30%;
+    --ring:              180 100% 45%; /* teal-glow ring on dark */
+
+    --radius: 0.5rem;
+  }
+}
