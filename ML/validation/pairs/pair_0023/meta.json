@@ -1,0 +1,13 @@
+{
+  "pair_id": "pair_0023",
+  "category": "growth",
+  "source_image": "train/dataset/images/val/49bd281d-f9cf-4340-bcf4-a6136aaa722c_jpg.rf.kmWtJNFBaNcyZ4JEnsSh.jpg",
+  "source_h": 640,
+  "source_w": 640,
+  "n_trees_total": 90,
+  "n_trees_lost": 0,
+  "n_trees_added": 3,
+  "seed": 64,
+  "perturbations": {},
+  "mask_source": "sam_polygons"
+}

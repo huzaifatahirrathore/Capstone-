@@ -1,0 +1,259 @@
+{
+  "timestamp": "2026-05-22_20-41-11",
+  "pairs_dir": "validation/pairs",
+  "n_pairs": 3,
+  "n_succeeded": 3,
+  "n_failed": 0,
+  "total_time_s": 3.5512213706970215,
+  "pipeline_time_s": 3.5283823013305664,
+  "config": {
+    "use_yolo": true,
+    "use_registration": true,
+    "use_preprocessing": true,
+    "vegetation_source": "seg",
+    "vegetation_source_label": "YOLO-seg union (learned)",
+    "exg_method": null,
+    "seg_model": "/media/asawir-shafiq-khokhar/OS/programs/forest trees.coco/models/tree_seg.pt",
+    "model_path": "/media/asawir-shafiq-khokhar/OS/programs/forest trees.coco/train/runs/detect/runs/tree_detect/yolo26m_trees-8/weights/best.pt",
+    "device": "0",
+    "conf": 0.25,
+    "min_zone_px": 500,
+    "imgsz": 1280
+  },
+  "per_category": {
+    "identity": {
+      "n": 1,
+      "loss_mean_iou": null,
+      "loss_mean_precision": null,
+      "loss_mean_recall": null,
+      "loss_mean_f1": null,
+      "loss_mean_area_err": null,
+      "loss_fp_rate": 0.0,
+      "loss_mean_false_px": 0.0,
+      "growth_mean_iou": null,
+      "growth_mean_precision": null,
+      "growth_mean_recall": null,
+      "growth_mean_f1": null,
+      "growth_mean_area_err": null,
+      "growth_fp_rate": 0.0,
+      "growth_mean_false_px": 0.0
+    },
+    "lighting": {
+      "n": 1,
+      "loss_mean_iou": 0.0,
+      "loss_mean_precision": 0.0,
+      "loss_mean_recall": null,
+      "loss_mean_f1": null,
+      "loss_mean_area_err": null,
+      "loss_fp_rate": 1.0,
+      "loss_mean_false_px": 36127.0,
+      "growth_mean_iou": 0.0,
+      "growth_mean_precision": 0.0,
+      "growth_mean_recall": null,
+      "growth_mean_f1": null,
+      "growth_mean_area_err": null,
+      "growth_fp_rate": 1.0,
+      "growth_mean_false_px": 7638.0
+    },
+    "homography": {
+      "n": 1,
+      "loss_mean_iou": 0.0,
+      "loss_mean_precision": 0.0,
+      "loss_mean_recall": null,
+      "loss_mean_f1": null,
+      "loss_mean_area_err": null,
+      "loss_fp_rate": 1.0,
+      "loss_mean_false_px": 56400.0,
+      "growth_mean_iou": 0.0,
+      "growth_mean_precision": 0.0,
+      "growth_mean_recall": null,
+      "growth_mean_f1": null,
+      "growth_mean_area_err": null,
+      "growth_fp_rate": 1.0,
+      "growth_mean_false_px": 16833.0
+    }
+  },
+  "per_pair": [
+    {
+      "pair_id": "pair_0001",
+      "category": "identity",
+      "source_h": 640,
+      "source_w": 640,
+      "elapsed_s": 2.4303107261657715,
+      "registration": {
+        "success": true,
+        "reason": "ok",
+        "n_features_before": 2887,
+        "n_features_after": 2887,
+        "n_matches": 2887,
+        "n_inliers": 2887,
+        "inlier_ratio": 1.0,
+        "used": true
+      },
+      "preprocessing": {
+        "clahe_applied": true,
+        "match_applied": true,
+        "match_mode": "global",
+        "non_vegetation_fraction": 1.0,
+        "used": true
+      },
+      "vegetation": {
+        "used": true,
+        "method": "YOLO-seg union",
+        "before_fraction": 0.4368701171875,
+        "after_fraction": 0.4368701171875
+      },
+      "loss": {
+        "iou": null,
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 0,
+        "truth_pixels": 0,
+        "fp_pixels": 0,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 409600,
+        "false_positive": false,
+        "false_positive_pct": 0.0
+      },
+      "growth": {
+        "iou": null,
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 0,
+        "truth_pixels": 0,
+        "fp_pixels": 0,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 409600,
+        "false_positive": false,
+        "false_positive_pct": 0.0
+      }
+    },
+    {
+      "pair_id": "pair_0002",
+      "category": "lighting",
+      "source_h": 640,
+      "source_w": 640,
+      "elapsed_s": 0.5287392139434814,
+      "registration": {
+        "success": true,
+        "reason": "ok",
+        "n_features_before": 1673,
+        "n_features_after": 720,
+        "n_matches": 682,
+        "n_inliers": 681,
+        "inlier_ratio": 0.998533724340176,
+        "used": true
+      },
+      "preprocessing": {
+        "clahe_applied": true,
+        "match_applied": true,
+        "match_mode": "global",
+        "non_vegetation_fraction": 1.0,
+        "used": true
+      },
+      "vegetation": {
+        "used": true,
+        "method": "YOLO-seg union",
+        "before_fraction": 0.373603515625,
+        "after_fraction": 0.30751708984375
+      },
+      "loss": {
+        "iou": 0.0,
+        "precision": 0.0,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 36127,
+        "truth_pixels": 0,
+        "fp_pixels": 36127,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 373473,
+        "false_positive": true,
+        "false_positive_pct": 8.820068359375
+      },
+      "growth": {
+        "iou": 0.0,
+        "precision": 0.0,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 7638,
+        "truth_pixels": 0,
+        "fp_pixels": 7638,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 401962,
+        "false_positive": true,
+        "false_positive_pct": 1.86474609375
+      }
+    },
+    {
+      "pair_id": "pair_0003",
+      "category": "homography",
+      "source_h": 640,
+      "source_w": 640,
+      "elapsed_s": 0.5693323612213135,
+      "registration": {
+        "success": true,
+        "reason": "ok",
+        "n_features_before": 2281,
+        "n_features_after": 2184,
+        "n_matches": 1757,
+        "n_inliers": 1752,
+        "inlier_ratio": 0.9971542401821286,
+        "used": true
+      },
+      "preprocessing": {
+        "clahe_applied": true,
+        "match_applied": true,
+        "match_mode": "global",
+        "non_vegetation_fraction": 1.0,
+        "used": true
+      },
+      "vegetation": {
+        "used": true,
+        "method": "YOLO-seg union",
+        "before_fraction": 0.4215087890625,
+        "after_fraction": 0.32753662109375
+      },
+      "loss": {
+        "iou": 0.0,
+        "precision": 0.0,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 56400,
+        "truth_pixels": 0,
+        "fp_pixels": 56400,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 353200,
+        "false_positive": true,
+        "false_positive_pct": 13.76953125
+      },
+      "growth": {
+        "iou": 0.0,
+        "precision": 0.0,
+        "recall": null,
+        "f1": null,
+        "area_error_pct": null,
+        "pred_pixels": 16833,
+        "truth_pixels": 0,
+        "fp_pixels": 16833,
+        "fn_pixels": 0,
+        "tp_pixels": 0,
+        "tn_pixels": 392767,
+        "false_positive": true,
+        "false_positive_pct": 4.109619140625
+      }
+    }
+  ],
+  "report_path": "validation/reports/2026-05-22_20-41-11.json"
+}
