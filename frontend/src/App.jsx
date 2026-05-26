@@ -1,5 +1,5 @@
-import NewProjectWizardPage from './pages/NewProjectWizardPage'
+import SatelliteAnalysisPage from './pages/SatelliteAnalysisPage'
 
 export default function App() {
-  return <NewProjectWizardPage />
+  return <SatelliteAnalysisPage />
 }
