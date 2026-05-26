@@ -1,5 +1,5 @@
-import LoginPage from './pages/LoginPage'
+import PlantationProjectsPage from './pages/PlantationProjectsPage'
 
 export default function App() {
-  return <LoginPage />
+  return <PlantationProjectsPage />
 }
