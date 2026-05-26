@@ -1,24 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TreeNetworkIcon,
   EyeIcon,
   EyeOffIcon,
   SpinnerIcon,
 } from "../common/Icons";
+import { useAuthStore } from "../store/authStore";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
+  const { login, loading, error, clearError } = useAuthStore();
+  const navigate = useNavigate();
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
+    clearError();
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password) return;
-    setLoading(true);
-    setTimeout(() => setLoading(false), 1800);
+    const ok = await login(form.email, form.password);
+    if (ok) navigate("/dashboard");
   };
 
   return (
@@ -119,6 +124,12 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+
+            {error && (
+              <p className="text-red-300 text-[0.7rem] bg-red-500/10 border border-red-400/20 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"

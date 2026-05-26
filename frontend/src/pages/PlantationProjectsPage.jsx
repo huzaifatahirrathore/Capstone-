@@ -1,115 +1,51 @@
-import { useState, useMemo } from "react";
-import {
-  PROJECTS,
-  REGIONS,
-  SPONSORS,
-  STATUSES,
-} from "../data/plantationProjects";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { REGIONS, SPONSORS, STATUSES } from "../data/plantationProjects";
 import { FranceMap } from "../components/FrenchMap";
 import { ProjectCard } from "../components/ProjectCard";
-import {
-  SearchIcon,
-  BellIcon,
-  LayersIcon,
-  SettingsIcon,
-  MapPinIcon,
-  ChevronIcon,
-} from "../common/Icons";
-import { FilterSelect } from "../common/FilterSelect";
+import { TopNav } from "../components/TopNav";
+import { SearchIcon, LayersIcon, MapPinIcon, SettingsIcon } from "../common/Icons";
 import { ProgressBar } from "../common/ProgressBar";
+import { FilterSelect } from "../common/FilterSelect";
+import { useProjectsStore } from "../store/projectsStore";
 
 export default function PlantationProjectsPage() {
+  const navigate = useNavigate();
+  const { projects, fetchProjects } = useProjectsStore();
   const [regionFilter, setRegionFilter] = useState("All Regions");
   const [sponsorFilter, setSponsorFilter] = useState("All Sponsors");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
+  useEffect(() => { fetchProjects(); }, []);
+
   const filtered = useMemo(() => {
-    return PROJECTS.filter((p) => {
-      if (regionFilter !== "All Regions" && p.region !== regionFilter)
-        return false;
-      if (sponsorFilter !== "All Sponsors" && p.sponsor !== sponsorFilter)
-        return false;
-      if (statusFilter !== "All Statuses" && p.status !== statusFilter)
-        return false;
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase()))
-        return false;
+    return projects.filter((p) => {
+      if (regionFilter !== "All Regions" && p.region !== regionFilter) return false;
+      if (sponsorFilter !== "All Sponsors" && p.sponsor !== sponsorFilter) return false;
+      if (statusFilter !== "All Statuses" && p.status !== statusFilter) return false;
+      if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [regionFilter, sponsorFilter, statusFilter, search]);
+  }, [projects, regionFilter, sponsorFilter, statusFilter, search]);
 
-  const selected = PROJECTS.find((p) => p.id === selectedId) ?? null;
+  const selected = projects.find((p) => p.id === selectedId) ?? null;
   const activeRegions = filtered.map((p) => p.region);
 
   return (
     <div className="flex flex-col h-screen bg-[#EFE8DC] overflow-hidden font-sans">
-      <header className="shrink-0 h-14 bg-[#A3431F] flex items-center justify-between px-6 z-30 shadow-md">
-        <div className="flex items-center gap-2.5">
-          <svg viewBox="0 0 24 26" width="22" height="22" fill="none">
-            <line
-              x1="12"
-              y1="26"
-              x2="12"
-              y2="16"
-              stroke="#EFE8DC"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            <circle cx="12" cy="16" r="2" fill="#00E6E6" />
-            <line
-              x1="12"
-              y1="16"
-              x2="5"
-              y2="10"
-              stroke="#EFE8DC"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <line
-              x1="12"
-              y1="16"
-              x2="19"
-              y2="10"
-              stroke="#EFE8DC"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <line
-              x1="12"
-              y1="16"
-              x2="12"
-              y2="7"
-              stroke="#EFE8DC"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <circle cx="5" cy="10" r="1.4" fill="#EFE8DC" fillOpacity="0.8" />
-            <circle cx="19" cy="10" r="1.4" fill="#EFE8DC" fillOpacity="0.8" />
-            <circle cx="12" cy="7" r="1.4" fill="#EFE8DC" fillOpacity="0.8" />
-          </svg>
-          <span className="text-[#EFE8DC] font-bold text-lg tracking-wide select-none">
-            EcoLedger
-          </span>
-          <span className="hidden sm:block h-4 w-px bg-[#EFE8DC]/25 mx-1" />
-          <span className="hidden sm:block text-[#EFE8DC]/50 text-xs tracking-widest uppercase font-medium select-none">
-            Enterprise
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="text-[#EFE8DC]/65 hover:text-[#EFE8DC] transition-colors p-1.5 rounded-lg hover:bg-white/10">
-            <SearchIcon />
+      <TopNav
+        actions={
+          <button
+            onClick={() => navigate("/projects/new")}
+            className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-[#EFE8DC] text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border border-white/20"
+          >
+            <span className="text-base leading-none">+</span>
+            Create Project
           </button>
-          <button className="relative text-[#EFE8DC]/65 hover:text-[#EFE8DC] transition-colors p-1.5 rounded-lg hover:bg-white/10">
-            <BellIcon />
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#00E6E6] rounded-full" />
-          </button>
-          <div className="w-8 h-8 rounded-full bg-[#EFE8DC]/20 border-2 border-[#EFE8DC]/35 flex items-center justify-center text-[#EFE8DC] text-xs font-bold select-none">
-            UI
-          </div>
-        </div>
-      </header>
+        }
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-[420px] shrink-0 flex flex-col bg-[#EFE8DC] border-r border-[#D6CDBF] overflow-hidden">
@@ -120,7 +56,7 @@ export default function PlantationProjectsPage() {
                   Plantation Projects
                 </h2>
                 <p className="text-[#8C7B68] text-[0.68rem] mt-0.5">
-                  {filtered.length} of {PROJECTS.length} projects
+                  {filtered.length} of {projects.length} projects
                 </p>
               </div>
               <button className="flex items-center gap-1.5 text-[#A3431F] text-[0.7rem] font-semibold bg-[#A3431F]/10 px-3 py-1.5 rounded-lg hover:bg-[#A3431F]/20 transition-colors">
@@ -214,7 +150,7 @@ export default function PlantationProjectsPage() {
             <FranceMap
               activeRegions={activeRegions}
               onRegionClick={(name) => {
-                const match = PROJECTS.find((p) => p.region === name);
+                const match = projects.find((p) => p.region === name);
                 if (match)
                   setSelectedId((prev) =>
                     prev === match.id ? null : match.id,

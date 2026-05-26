@@ -1,5 +1,5 @@
-import SatelliteAnalysisPage from './pages/SatelliteAnalysisPage'
+import AppRoutes from './routes/AppRoutes'
 
 export default function App() {
-  return <SatelliteAnalysisPage />
+  return <AppRoutes />
 }

@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TopNav } from "../components/TopNav";
+import { useProjectsStore } from "../store/projectsStore";
 import { WizardStepper } from "../components/WizardStepper";
 import { BasicInfoForm } from "../components/BasicInfoForm";
 import { ProjectPreviewCard } from "../components/ProjectPreviewCard";
@@ -32,6 +34,8 @@ const STEP_META = {
 };
 
 export default function NewProjectWizardPage() {
+  const navigate = useNavigate();
+  const { createProject } = useProjectsStore();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(EMPTY_FORM);
   const [points, setPoints] = useState([
@@ -69,7 +73,10 @@ export default function NewProjectWizardPage() {
               <BoundaryMapCard points={points} onChange={setPoints} />
               <ConfirmationCard
                 onBack={() => setStep(1)}
-                onContinue={() => setStep(3)}
+                onContinue={async () => {
+                  await createProject({ ...form, boundary: points });
+                  setStep(3);
+                }}
               />
             </>
           )}
@@ -99,12 +106,20 @@ export default function NewProjectWizardPage() {
                   This step will connect to the on-chain registry and sign the
                   project record.
                 </p>
-                <button
-                  onClick={() => setStep(2)}
-                  className="text-[#A3431F] text-sm font-semibold underline underline-offset-2"
-                >
-                  ← Back to Boundary
-                </button>
+                <div className="flex flex-col items-center gap-2 mt-2">
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className="bg-[#008080] hover:bg-[#006666] text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors"
+                  >
+                    Go to Dashboard
+                  </button>
+                  <button
+                    onClick={() => setStep(2)}
+                    className="text-[#A3431F] text-sm font-semibold underline underline-offset-2"
+                  >
+                    ← Back to Boundary
+                  </button>
+                </div>
               </div>
             </div>
           )}

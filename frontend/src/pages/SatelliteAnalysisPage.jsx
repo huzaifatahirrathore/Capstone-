@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState }       from "react";
 import { TopNav }         from "../components/TopNav";
 import { FileDropzone }   from "../components/FileDropzone";
 import { ScanTimeline }   from "../components/ScanTimeline";
 import { CanopyViewport } from "../components/CanopyViewport";
 import { MetricWidget }   from "../components/MetricWidget";
 import { ZapIcon, TrendUpIcon, LeafIcon, CpuIcon, ChevronIcon } from "../common/Icons";
+import { useAnalysisStore } from "../store/analysisStore";
 
 const BASELINE_DATES = ["May 2021", "Jun 2022", "Sep 2023", "Jan 2025", "May 2026"];
 
@@ -19,18 +20,20 @@ const CONCLUSION_POINTS = [
 ];
 
 export default function SatelliteAnalysisPage() {
-  const [baseline,  setBaseline]  = useState("May 2021");
-  const [compare,   setCompare]   = useState("May 2026");
-  const [beforeUrl, setBeforeUrl] = useState(null);
-  const [afterUrl,  setAfterUrl]  = useState(null);
-  const [running,   setRunning]   = useState(false);
-  const [done,      setDone]      = useState(true);   // pre-filled so the output is visible
+  const {
+    beforeFile, afterFile,
+    baselineDate, compareDate,
+    setBaselineDate, setCompareDate,
+    setBeforeFile, setAfterFile,
+    runAnalysis, running, progress, result,
+  } = useAnalysisStore();
 
-  const handleRun = () => {
+  const [afterUrl,  setAfterUrl]  = useState(null);
+  const done = Boolean(result) || progress >= 96;
+
+  const handleRun = async () => {
     if (running) return;
-    setDone(false);
-    setRunning(true);
-    setTimeout(() => { setRunning(false); setDone(true); }, 2400);
+    await runAnalysis();
   };
 
   return (
@@ -59,8 +62,8 @@ export default function SatelliteAnalysisPage() {
               <span className="text-[#6B7280] text-[0.65rem] font-bold uppercase tracking-wider shrink-0">Baseline</span>
               <div className="relative">
                 <select
-                  value={baseline}
-                  onChange={e => setBaseline(e.target.value)}
+                  value={baselineDate}
+                  onChange={e => setBaselineDate(e.target.value)}
                   className="appearance-none bg-transparent text-[#9CA3AF] text-sm font-semibold pr-5 outline-none cursor-pointer"
                 >
                   {BASELINE_DATES.map(d => <option key={d} value={d}>{d}</option>)}
@@ -75,8 +78,8 @@ export default function SatelliteAnalysisPage() {
               <span className="text-[#00E6E6]/60 text-[0.65rem] font-bold uppercase tracking-wider shrink-0">Compare</span>
               <div className="relative">
                 <select
-                  value={compare}
-                  onChange={e => setCompare(e.target.value)}
+                  value={compareDate}
+                  onChange={e => setCompareDate(e.target.value)}
                   className="appearance-none bg-transparent text-[#00E6E6] text-sm font-semibold pr-5 outline-none cursor-pointer"
                 >
                   {BASELINE_DATES.map(d => <option key={d} value={d}>{d}</option>)}
@@ -97,13 +100,13 @@ export default function SatelliteAnalysisPage() {
           <div className="flex gap-4" style={{ height: "190px" }}>
             <FileDropzone
               label="Before Image"
-              tag={baseline}
-              onFile={(_, url) => setBeforeUrl(url)}
+              tag={baselineDate}
+              onFile={(file, url) => setBeforeFile(file)}
             />
             <FileDropzone
               label="After Image"
-              tag={compare}
-              onFile={(_, url) => setAfterUrl(url)}
+              tag={compareDate}
+              onFile={(file, url) => { setAfterFile(file); setAfterUrl(url); }}
             />
           </div>
 
@@ -130,7 +133,7 @@ export default function SatelliteAnalysisPage() {
           </button>
 
           {/* Timeline */}
-          <ScanTimeline progress={96} running={running} />
+          <ScanTimeline progress={progress} running={running} />
         </div>
 
         {/* ── Section 2: AI Output Viewport ── */}

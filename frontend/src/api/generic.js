@@ -104,6 +104,9 @@ const setHeader = () => {
 }
 
 const handleResponse = (response) => {
+    if (!response) {
+        return { status: "Error", errorMessage: "Network error — server unreachable" }
+    }
     if (response.status === 200 || response.status === 204 || response.status === 201) {
         if (response.data === undefined) {
             return response
