@@ -116,14 +116,20 @@ function runTrainCompare(beforePath, afterPath) {
 
 async function getCompareOutputPath(beforePath, afterPath) {
   const beforeStem = path.parse(beforePath).name;
-  const afterStem = path.parse(afterPath).name;
-  const outputPath = path.join(
-    TRAIN_RESULTS_DIR,
-    `compare_${beforeStem}_vs_${afterStem}_ExG.jpg`
-  );
+  const afterStem  = path.parse(afterPath).name;
+  const prefix     = `compare_${beforeStem}_vs_${afterStem}_`;
 
-  await fs.promises.access(outputPath, fs.constants.F_OK);
-  return outputPath;
+  // compare.py appends the vegetation method tag (e.g. ExG+Otsu, ExG, HSV)
+  // so we scan the results dir for any .jpg matching our prefix instead of
+  // hardcoding the tag.
+  await fs.promises.mkdir(TRAIN_RESULTS_DIR, { recursive: true });
+  const files = await fs.promises.readdir(TRAIN_RESULTS_DIR);
+  const match = files.find(f => f.startsWith(prefix) && f.endsWith(".jpg"));
+
+  if (!match) {
+    throw new Error(`Compare output not found for stems: ${beforeStem} vs ${afterStem}`);
+  }
+  return path.join(TRAIN_RESULTS_DIR, match);
 }
 
 app.post("/compare", upload.fields([
