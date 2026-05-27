@@ -134,6 +134,17 @@ def _add_legend(img: np.ndarray) -> np.ndarray:
 SEG_MODEL_PATH = str(_PROJECT_ROOT / "models" / "tree_seg.pt")
 
 
+def _to_native(v):
+    """Recursively convert numpy scalars to Python native types for JSON serialisation."""
+    if hasattr(v, 'item'):
+        return v.item()
+    if isinstance(v, dict):
+        return {k: _to_native(x) for k, x in v.items()}
+    if isinstance(v, (list, tuple)):
+        return [_to_native(x) for x in v]
+    return v
+
+
 def compare(before_path: str, after_path: str,
             conf: float = 0.25,
             scale_m_per_px: float = None,
@@ -145,7 +156,8 @@ def compare(before_path: str, after_path: str,
             use_exg: bool = True,
             use_yolo: bool = False,
             vegetation_source: str = None,
-            seg_model_path: str = SEG_MODEL_PATH) -> dict:
+            seg_model_path: str = SEG_MODEL_PATH,
+            json_output: bool = False) -> dict:
 
     for p in (before_path, after_path):
         if not Path(p).exists():
@@ -327,7 +339,7 @@ def compare(before_path: str, after_path: str,
         cv2.imwrite(str(out_path), composite)
         print(f"Comparison image saved to: {out_path}")
 
-    return {
+    ret = {
         'metrics_before': m_before,
         'metrics_after':  m_after,
         'loss_zones':     result.loss_zones,
@@ -340,6 +352,34 @@ def compare(before_path: str, after_path: str,
             'elapsed_s':     result.elapsed_s,
         },
     }
+
+    if json_output:
+        import json
+        payload = _to_native({
+            'metrics_before': m_before,
+            'metrics_after':  m_after,
+            'env_before':     env_before,
+            'env_after':      env_after,
+            'canopy_delta_m2':  canopy_delta_m2,
+            'seq_delta_kg':     seq_delta_kg,
+            'o2_delta_kg':      o2_delta_kg,
+            'stock_delta_kg':   stock_delta_kg,
+            'loss_zones': [
+                {'area_px': z['area_px'], 'cx': float(z['cx']), 'cy': float(z['cy'])}
+                for z in result.loss_zones
+            ],
+            'growth_zones': [
+                {'area_px': z['area_px'], 'cx': float(z['cx']), 'cy': float(z['cy'])}
+                for z in result.growth_zones
+            ],
+            'scale_assumed': scale_assumed,
+            'biome':         biome,
+            'elapsed_s':     result.elapsed_s,
+            'veg_method':    result.vegetation.get('method', ''),
+        })
+        print("JSON_OUTPUT:" + json.dumps(payload))
+
+    return ret
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
@@ -379,6 +419,8 @@ if __name__ == "__main__":
                         help="Path to the YOLO-seg model (for --veg-source seg)")
     parser.add_argument("--no-save",     action="store_true",
                         help="Don't save the composite comparison image")
+    parser.add_argument("--json-output", action="store_true",
+                        help="Print structured JSON metrics to stdout (prefixed JSON_OUTPUT:)")
     args = parser.parse_args()
 
     veg_source = args.veg_source or ("hsv" if args.no_exg else None)
@@ -397,4 +439,5 @@ if __name__ == "__main__":
         use_yolo=args.use_yolo,
         vegetation_source=veg_source,
         seg_model_path=args.seg_model,
+        json_output=args.json_output,
     )

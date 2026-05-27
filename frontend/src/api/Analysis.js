@@ -4,8 +4,8 @@ import { getNodeBackendUrl } from "../constants/Urls"
 
 /**
  * POST /compare — sends before + after as multipart/form-data.
- * Backend runs the Python ML pipeline and returns a composite JPEG blob.
- * Returns a blob object URL string on success, or { status: "Error" } on failure.
+ * Returns { imageUrl: string, metrics: object } on success, or { status: "Error" } on failure.
+ * imageUrl is a data URL (data:image/jpeg;base64,...) from the backend composite JPEG.
  */
 export const compareImagesApi = async (beforeFile, afterFile) => {
     const formData = new FormData()
@@ -13,12 +13,11 @@ export const compareImagesApi = async (beforeFile, afterFile) => {
     formData.append("after", afterFile)
 
     try {
-        const response = await axios.post(
-            `${getNodeBackendUrl()}compare`,
-            formData,
-            { responseType: "blob" }
-        )
-        return URL.createObjectURL(response.data)
+        const response = await axios.post(`${getNodeBackendUrl()}compare`, formData)
+        return {
+            imageUrl: response.data.imageDataUrl,
+            metrics:  response.data.metrics || null,
+        }
     } catch (err) {
         const msg = err.response?.data?.error || err.message || "Compare failed"
         return { status: "Error", errorMessage: msg }

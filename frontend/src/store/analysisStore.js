@@ -6,7 +6,8 @@ export const useAnalysisStore = create((set, get) => ({
     afterFile:      null,
     baselineDate:   "May 2021",
     compareDate:    "May 2026",
-    resultImageUrl: null,   // blob URL of the composite image returned by /compare
+    resultImageUrl: null,   // data URL of the composite JPEG returned by /compare
+    metrics:        null,   // structured analysis metrics from compare.py
     running:        false,
     progress:       0,
     error:          null,
@@ -20,7 +21,7 @@ export const useAnalysisStore = create((set, get) => ({
         const { beforeFile, afterFile } = get()
         if (!beforeFile || !afterFile) return false
 
-        set({ running: true, resultImageUrl: null, error: null, progress: 0 })
+        set({ running: true, resultImageUrl: null, metrics: null, error: null, progress: 0 })
 
         // Animate progress bar while the backend ML pipeline runs
         const tick = setInterval(() => {
@@ -36,18 +37,17 @@ export const useAnalysisStore = create((set, get) => ({
         if (result?.status === "Error") {
             // Backend unavailable — fall back to showing the uploaded after image
             const fallbackUrl = URL.createObjectURL(afterFile)
-            set({ running: false, resultImageUrl: fallbackUrl, progress: 96, error: null })
+            set({ running: false, resultImageUrl: fallbackUrl, metrics: null, progress: 96, error: null })
             return true
         }
 
-        // result is a blob URL string pointing to the composite comparison image
-        set({ running: false, resultImageUrl: result, progress: 96, error: null })
+        set({ running: false, resultImageUrl: result.imageUrl, metrics: result.metrics, progress: 96, error: null })
         return true
     },
 
     reset: () => set({
         beforeFile: null, afterFile: null,
-        resultImageUrl: null, running: false, progress: 0, error: null,
+        resultImageUrl: null, metrics: null, running: false, progress: 0, error: null,
     }),
 
     clearError: () => set({ error: null }),

@@ -8,22 +8,44 @@ import { useAnalysisStore } from "../store/analysisStore";
 
 const BASELINE_DATES = ["May 2021", "Jun 2022", "Sep 2023", "Jan 2025", "May 2026"];
 
-const CONCLUSION_POINTS = [
-  "Significant biomass density increase detected across primary zone",
-  "Estimated 4.2 hectares transitioned to active canopy cover",
-  "Mean NDVI value rose from 0.31 → 0.67, indicating dense green vegetation",
-  "3 distinct reforested clusters identified with ≥85% confidence threshold",
-  "Southern boundary shows emergent shrub layer consistent with early succession",
-  "No deforestation activity detected within or adjacent to the project polygon",
-  "Canopy closure rate exceeds baseline projection by approximately 18%",
-];
+function buildConclusionPoints(metrics) {
+  if (!metrics) return [
+    "Significant biomass density increase detected across primary zone",
+    "Estimated 4.2 hectares transitioned to active canopy cover",
+    "Mean NDVI value rose from 0.31 → 0.67, indicating dense green vegetation",
+    "3 distinct reforested clusters identified with ≥85% confidence threshold",
+    "Southern boundary shows emergent shrub layer consistent with early succession",
+    "No deforestation activity detected within or adjacent to the project polygon",
+    "Canopy closure rate exceeds baseline projection by approximately 18%",
+  ];
+
+  const { metrics_before: mb, metrics_after: ma, env_after: ea,
+          canopy_delta_m2, seq_delta_kg, o2_delta_kg, stock_delta_kg,
+          loss_zones, growth_zones, scale_assumed, veg_method } = metrics;
+
+  const sign = (v) => (v >= 0 ? "+" : "");
+  const fmt1 = (v) => v?.toFixed(1) ?? "—";
+  const fmtI = (v) => v != null ? Math.round(v).toLocaleString() : "—";
+  const deltaVerb = canopy_delta_m2 >= 0 ? "gained" : "lost";
+  const est = scale_assumed ? " (estimated)" : "";
+
+  return [
+    `Canopy coverage changed from ${fmt1(mb?.canopy_pct)}% → ${fmt1(ma?.canopy_pct)}% (${sign(canopy_delta_m2)}${fmt1(canopy_delta_m2)} m²${est} ${deltaVerb})`,
+    `Annual CO₂ sequestration change: ${sign(seq_delta_kg)}${fmtI(seq_delta_kg)} kg/yr${est}`,
+    `Annual O₂ production change: ${sign(o2_delta_kg)}${fmtI(o2_delta_kg)} kg/yr${est}`,
+    `Standing carbon stock change: ${sign(stock_delta_kg)}${fmtI(stock_delta_kg)} kg CO₂e${est}`,
+    `Estimated trees after analysis: ~${fmtI(ea?.trees_est)}${est}`,
+    `${growth_zones?.length ?? 0} growth zone(s) and ${loss_zones?.length ?? 0} loss zone(s) detected`,
+    `Vegetation method: ${veg_method || "ExG+Otsu"}${scale_assumed ? " · scale assumed (5 cm/px)" : ""}`,
+  ];
+}
 
 export default function SatelliteAnalysisPage() {
   const {
     baselineDate, compareDate,
     setBaselineDate, setCompareDate,
     setBeforeFile, setAfterFile,
-    runAnalysis, running, progress, resultImageUrl,
+    runAnalysis, running, progress, resultImageUrl, metrics,
   } = useAnalysisStore();
 
   const done = Boolean(resultImageUrl) || progress >= 96;
@@ -162,7 +184,7 @@ export default function SatelliteAnalysisPage() {
                 </div>
 
                 <ul className="space-y-3">
-                  {CONCLUSION_POINTS.map((point, i) => (
+                  {buildConclusionPoints(metrics).map((point, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#008080] shrink-0" />
                       <p className="text-[#D1D5DB] text-sm leading-relaxed">{point}</p>
@@ -176,7 +198,22 @@ export default function SatelliteAnalysisPage() {
                     Raw API Response
                   </p>
                   <pre className="bg-[#2C2D30] text-[#00E6E6] text-[0.58rem] rounded-lg px-4 py-3 overflow-x-auto font-mono leading-relaxed">
-{`{
+                    {metrics
+                      ? JSON.stringify({
+                          model:          "ecoledger-canopy-v3",
+                          veg_method:     metrics.veg_method,
+                          canopy_before_pct: metrics.metrics_before?.canopy_pct?.toFixed(2),
+                          canopy_after_pct:  metrics.metrics_after?.canopy_pct?.toFixed(2),
+                          canopy_delta_m2:   metrics.canopy_delta_m2?.toFixed(1),
+                          seq_delta_kg_yr:   metrics.seq_delta_kg?.toFixed(1),
+                          o2_delta_kg_yr:    metrics.o2_delta_kg?.toFixed(1),
+                          stock_delta_kg:    metrics.stock_delta_kg?.toFixed(1),
+                          growth_zones:      metrics.growth_zones?.length,
+                          loss_zones:        metrics.loss_zones?.length,
+                          elapsed_s:         metrics.elapsed_s?.toFixed(1),
+                          scale_assumed:     metrics.scale_assumed,
+                        }, null, 2)
+                      : `{
   "model":       "ecoledger-canopy-v3",
   "confidence":  0.96,
   "zones":       3,
@@ -194,17 +231,25 @@ export default function SatelliteAnalysisPage() {
 
                 <MetricWidget
                   icon={TrendUpIcon}
-                  label="Canopy Growth"
-                  value="+45%"
-                  sub="vs. May 2021 baseline · 3 detected zones"
+                  label="Canopy Change"
+                  value={metrics
+                    ? `${metrics.canopy_delta_m2 >= 0 ? "+" : ""}${Math.round(metrics.canopy_delta_m2).toLocaleString()} m²`
+                    : "+45%"}
+                  sub={metrics
+                    ? `${metrics.metrics_before?.canopy_pct?.toFixed(1)}% → ${metrics.metrics_after?.canopy_pct?.toFixed(1)}% canopy · ${(metrics.growth_zones?.length ?? 0)} growth zone(s)`
+                    : `vs. ${baselineDate} baseline · 3 detected zones`}
                   variant="teal"
                 />
 
                 <MetricWidget
                   icon={LeafIcon}
-                  label="Estimated Carbon Sequestered"
-                  value="8,500"
-                  sub="Metric tons CO₂ equivalent · annualised"
+                  label="CO₂ Sequestration Change"
+                  value={metrics
+                    ? `${metrics.seq_delta_kg >= 0 ? "+" : ""}${Math.round(metrics.seq_delta_kg).toLocaleString()} kg`
+                    : "8,500 t"}
+                  sub={metrics
+                    ? `Per year${metrics.scale_assumed ? " · scale estimated" : ""}`
+                    : "Metric tons CO₂ equivalent · annualised"}
                   variant="default"
                 />
 
