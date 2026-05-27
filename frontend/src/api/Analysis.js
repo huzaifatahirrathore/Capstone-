@@ -1,19 +1,29 @@
-import { sendGet, sendPost, uploadFile, uploadFiles } from "./generic"
+import axios from "axios"
+import { sendGet, sendPost } from "./generic"
+import { getNodeBackendUrl } from "../constants/Urls"
 
-export const uploadAnalysisImageApi = (projectId, file, type) => {
-    const formUrl = `analysis/upload?projectId=${projectId}&type=${type}`
-    return uploadFile(formUrl, file)
+/**
+ * POST /compare — sends before + after as multipart/form-data.
+ * Backend runs the Python ML pipeline and returns a composite JPEG blob.
+ * Returns a blob object URL string on success, or { status: "Error" } on failure.
+ */
+export const compareImagesApi = async (beforeFile, afterFile) => {
+    const formData = new FormData()
+    formData.append("before", beforeFile)
+    formData.append("after", afterFile)
+
+    try {
+        const response = await axios.post(
+            `${getNodeBackendUrl()}compare`,
+            formData,
+            { responseType: "blob" }
+        )
+        return URL.createObjectURL(response.data)
+    } catch (err) {
+        const msg = err.response?.data?.error || err.message || "Compare failed"
+        return { status: "Error", errorMessage: msg }
+    }
 }
 
-export const uploadAnalysisImagesApi = (projectId, files) =>
-    uploadFiles(`analysis/upload?projectId=${projectId}`, files)
-
-export const runAnalysisApi = (payload) =>
-    sendPost("analysis/run", payload)
-    // payload: { projectId, beforeImageId, afterImageId, baselineDate, compareDate }
-
-export const getAnalysisResultApi = (analysisId) =>
-    sendGet(`analysis/${analysisId}`)
-
-export const getProjectAnalysesApi = (projectId) =>
-    sendGet(`analysis?projectId=${projectId}`)
+export const getAnalysisResultApi   = (analysisId) => sendGet(`analysis/${analysisId}`)
+export const getProjectAnalysesApi  = (projectId)  => sendGet(`analysis?projectId=${projectId}`)

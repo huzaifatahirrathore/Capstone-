@@ -86,7 +86,7 @@ function runTrainCompare(beforePath, afterPath) {
   return new Promise((resolve, reject) => {
     const child = spawn(
       TRAIN_PYTHON,
-      [TRAIN_COMPARE_SCRIPT, beforePath, afterPath],
+      [TRAIN_COMPARE_SCRIPT, beforePath, afterPath, "--json-output"],
       { cwd: TRAIN_ROOT }
     );
 
@@ -109,7 +109,16 @@ function runTrainCompare(beforePath, afterPath) {
         return;
       }
 
-      resolve(stdout);
+      // Extract the structured JSON metrics line emitted by --json-output
+      let metrics = null;
+      for (const line of stdout.split("\n")) {
+        if (line.startsWith("JSON_OUTPUT:")) {
+          try { metrics = JSON.parse(line.slice("JSON_OUTPUT:".length)); } catch (_) {}
+          break;
+        }
+      }
+
+      resolve({ stdout, metrics });
     });
   });
 }
@@ -147,10 +156,16 @@ app.post("/compare", upload.fields([
     const beforePath = path.resolve(beforeFile.path);
     const afterPath = path.resolve(afterFile.path);
 
-    await runTrainCompare(beforePath, afterPath);
+    const { metrics } = await runTrainCompare(beforePath, afterPath);
     const outputPath = await getCompareOutputPath(beforePath, afterPath);
 
-    res.sendFile(outputPath);
+    const imageBuffer = await fs.promises.readFile(outputPath);
+    const imageBase64 = imageBuffer.toString("base64");
+
+    res.json({
+      imageDataUrl: `data:image/jpeg;base64,${imageBase64}`,
+      metrics: metrics || null,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message || "Compare failed" });
   }

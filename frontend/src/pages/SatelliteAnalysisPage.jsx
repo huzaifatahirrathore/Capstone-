@@ -1,4 +1,3 @@
-import { useState }       from "react";
 import { TopNav }         from "../components/TopNav";
 import { FileDropzone }   from "../components/FileDropzone";
 import { ScanTimeline }   from "../components/ScanTimeline";
@@ -21,15 +20,13 @@ const CONCLUSION_POINTS = [
 
 export default function SatelliteAnalysisPage() {
   const {
-    beforeFile, afterFile,
     baselineDate, compareDate,
     setBaselineDate, setCompareDate,
     setBeforeFile, setAfterFile,
-    runAnalysis, running, progress, result,
+    runAnalysis, running, progress, resultImageUrl,
   } = useAnalysisStore();
 
-  const [afterUrl,  setAfterUrl]  = useState(null);
-  const done = Boolean(result) || progress >= 96;
+  const done = Boolean(resultImageUrl) || progress >= 96;
 
   const handleRun = async () => {
     if (running) return;
@@ -101,12 +98,12 @@ export default function SatelliteAnalysisPage() {
             <FileDropzone
               label="Before Image"
               tag={baselineDate}
-              onFile={(file, url) => setBeforeFile(file)}
+              onFile={(file) => setBeforeFile(file)}
             />
             <FileDropzone
               label="After Image"
               tag={compareDate}
-              onFile={(file, url) => { setAfterFile(file); setAfterUrl(url); }}
+              onFile={(file) => setAfterFile(file)}
             />
           </div>
 
@@ -142,7 +139,7 @@ export default function SatelliteAnalysisPage() {
             <p className="text-[#6B7280] text-[0.65rem] font-bold uppercase tracking-widest mb-3">
               AI Generated Output
             </p>
-            <CanopyViewport imageUrl={afterUrl} />
+            <CanopyViewport imageUrl={resultImageUrl} />
           </div>
         )}
 
