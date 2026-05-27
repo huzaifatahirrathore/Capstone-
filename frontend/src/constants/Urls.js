@@ -8,3 +8,11 @@ export const getBaseApiUrl = () => {
         return "/api/"
     }
 }
+
+// Node.js backend (Express on port 3000)
+export const getNodeBackendUrl = () => {
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        return "http://localhost:3000/"
+    }
+    return "/api/"
+}
